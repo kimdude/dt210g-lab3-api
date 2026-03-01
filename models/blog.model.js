@@ -9,7 +9,7 @@ const BlogSchema = mongoose.Schema({
         type: String,
         minlength: [10, "Text must be over 10 characters long."]
     },
-    user:  {
+    username:  {
         type: mongoose.Schema.Types.ObjectId, 
         ref: "User",
         required: true

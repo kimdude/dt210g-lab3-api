@@ -5,9 +5,19 @@ module.exports = (server) => {
     server.route([
 
         //Adding user
+        {
+            method: "POST",
+            path: "/user/register",
+            handler: controller.addUser
+        },
 
         //Loging in user
-
+        {
+            method: "POST",
+            path: "/user/login",
+            handler: controller.loginUser
+        }
+        
     ])
 }
 
