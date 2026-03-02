@@ -7,8 +7,9 @@ exports.getBlogs = async (request, h) => {
     
     const { limit, skip } = request.query;
 
+    //Queries for pagination
     let start = 0;
-    let end = start +10;                //KONTROLLER ATT +10 E OK
+    let end = start +10;             
 
     if(skip) {
         start = Number(skip);
@@ -17,6 +18,7 @@ exports.getBlogs = async (request, h) => {
     try {
         let result;
 
+        //Validation of queries
         if(start < 0) {
             console.log("Fångad av första if-satsen.")
             throw new Error("Query 'skip' must be higher than 0");
@@ -34,9 +36,12 @@ exports.getBlogs = async (request, h) => {
                 throw new Error("Query 'end' must be a number");
             }
 
+            //Fetch with limit
             result = await Post.find().skip(start).limit(end)
 
         } else {
+
+            //Fetch without limit
             result = await Post.find().skip(start);
         }
 
@@ -63,6 +68,7 @@ exports.addBlog = async (request, h) => {
         const post = new Post({title, text, user_id});
         const data = await post.save();
 
+        //Response with username
         const result = {
             title: data.title,
             text: data.text,
@@ -85,14 +91,16 @@ exports.getBlog = async (request, h) => {
     try {
         const { _id } = request.params;
 
+        //Fetching post
         const data = await Post.findOne({ _id });
 
-        if(!data) {                                 //FÖRBÄTTRA FELHANTERINGEN
+        if(!data) {                                
             throw new Error("Invalid post ID");
         }
 
         const user = await User.findOne({ _id: data.user_id });
 
+        //Response with username
         const result = {
             title: data.title,
             text: data.text,
@@ -125,12 +133,14 @@ exports.updateBlog = async (request, h) => {
         const username = request.auth.credentials.username;
         const user_id= request.auth.credentials._id;
 
+        //Updating
         const data = await Post.findOneAndUpdate({ _id: _id }, { title, text }, { returnDocument: "after" });
 
         if(!data) {
             throw new Error("Invalid post ID");
         }
 
+        //Response with username
         const result = {
             title: data.title,
             text: data.text,
@@ -158,6 +168,7 @@ exports.deleteBlog = async (request, h) => {
     try {
         const { _id } = request.params;
 
+        //Deleting
         const result = await Post.deleteOne({ _id });
 
         if(result.deletedCount === 0) {
