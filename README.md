@@ -15,3 +15,6 @@ Repot innehåller källkod för ett API som hanterar användare och blogginlägg
 |-------|------------------|------------------------|-------|
 |GET    |/blog             |Hämta alla inlägg       |Nej    |
 |GET    |/blog/{_id}       |Hämta specifikt inlägg  |Nej    |
+|POST   |/blog             |Skapa nytt inlägg       |Ja     |
+|PUT    |/blog/{_id}       |Uppdatera inlägg        |Ja     |
+|DELETE |/blog/{_id}       |Ta bort inlägg          |Ja     |
