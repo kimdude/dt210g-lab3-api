@@ -38,11 +38,30 @@ module.exports = (server) => {
                     strategy: "jwt"
                 }
             }
-        }
+        },
 
         //Updating post
+        {
+            method: "PUT",
+            path: "/blog/{_id}",
+            handler: controller.updateBlog,
+            options: {
+                auth: {
+                    strategy: "jwt"
+                }
+            }
+        },
 
         //Delete post
-
+        {
+            method: "DELETE",
+            path: "/blog/{_id}",
+            handler: controller.deleteBlog,
+            options: {
+                auth: {
+                    strategy: "jwt"
+                }
+            }
+        }
     ])
 }

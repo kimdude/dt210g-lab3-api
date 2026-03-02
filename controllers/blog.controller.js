@@ -65,7 +65,7 @@ exports.addBlog = async (request, h) => {
 
         const result = {
             title: data.title,
-            content: data.text,
+            text: data.text,
             user_id: data.user_id,
             username:  request.auth.credentials.username,
             created: data.createdAt,
@@ -88,7 +88,6 @@ exports.getBlog = async (request, h) => {
         const data = await Post.findOne({ _id });
 
         if(!data) {                                 //FÖRBÄTTRA FELHANTERINGEN
-            crossOriginIsolated.log("test")
             throw new Error("Invalid post ID");
         }
 
@@ -96,7 +95,7 @@ exports.getBlog = async (request, h) => {
 
         const result = {
             title: data.title,
-            content: data.text,
+            text: data.text,
             user_id: data.user_id,
             username:  user.username,
             created: data.createdAt,
@@ -108,7 +107,7 @@ exports.getBlog = async (request, h) => {
     } catch(error) {
 
         if(error.message === "Invalid post ID") {
-            return h.response({ error: error.message }).code(409);
+            return h.response({ error: error.message }).code(404);
         }
 
         return h.response({ error: "An error occurred fetching the post: " + error.message }).code(500);
@@ -117,17 +116,62 @@ exports.getBlog = async (request, h) => {
 }
 
 //Updating post
-exports.updateBlogs = async (request, h) => {
+exports.updateBlog = async (request, h) => {
     try {
-        
-    } catch(error) {}
+
+        const { title, text } = request.payload;
+        const { _id } = request.params;
+
+        const username = request.auth.credentials.username;
+        const user_id= request.auth.credentials._id;
+
+        const data = await Post.findOneAndUpdate({ _id: _id }, { title, text }, { returnDocument: "after" });
+
+        if(!data) {
+            throw new Error("Invalid post ID");
+        }
+
+        const result = {
+            title: data.title,
+            text: data.text,
+            user_id: user_id,
+            username:  username,
+            created: data.createdAt,
+            updated: data.updatedAt
+        }   
+
+        return h.response(result).code(200);
+
+    } catch(error) {
+
+        if(error.message === "Invalid post ID") {
+            return h.response({ error: error.message }).code(404);
+        }
+
+        return h.response({ error: "An error occurred updating post: " + error.message }).code(500);
+    }
     
 }
 
 //Delete post
-exports.deleteBlogs = async (request, h) => {
+exports.deleteBlog = async (request, h) => {
     try {
+        const { _id } = request.params;
 
-    } catch(error) {}
+        const result = await Post.deleteOne({ _id });
+
+        if(result.deletedCount === 0) {
+            throw new Error("Invlid post ID");
+        }
+
+        return h.response({ message: "Post deleted" }).code(200);
+    } catch(error) {
+
+        if(error.message === "Invlid post ID") {
+            return h.response({ error: error.message }).code(404);
+        }
+
+        return h.response({ error: "An error occurred deleting post: " + error.message }).code(500);
+    }
     
 }
