@@ -49,6 +49,14 @@ const init = async () => {
         validate
     })
 
+    server.route({
+        method: "GET",
+        path: "/",
+        handler: async (request, h) => {
+            return h.response({message: "Welcome to this API!"});
+        }
+    })
+
     require("./routes/user.routes")(server);
     require("./routes/blog.routes")(server);
 
