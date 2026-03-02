@@ -9,11 +9,6 @@ module.exports = (server) => {
             method: "GET",
             path: "/blog",
             handler: controller.getBlogs,
-            options: {
-                auth: {
-                    strategy: "jwt"
-                }
-            }
         },
 
         //Getting specific post
@@ -21,11 +16,6 @@ module.exports = (server) => {
             method: "GET",
             path: "/blog/{_id}",
             handler: controller.getBlog,
-            options: {
-                auth: {
-                    strategy: "jwt"
-                }
-            }
         },
 
         //Adding post
