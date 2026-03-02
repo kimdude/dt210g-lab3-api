@@ -8,10 +8,10 @@ module.exports = (server) => {
         {
             method: "POST",
             path: "/user/register",
-            handler: controller.addUser
+            handler: controller.addUser,
         },
 
-        //Loging in user
+        //Logging in user
         {
             method: "POST",
             path: "/user/login",
