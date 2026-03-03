@@ -26,6 +26,6 @@ Med __limit__ kan antalet resultat som returneras begränsas. I ovan exempel kom
 länk **?skip=10**
 Med __skip__ kan anges hur många inlägg som ska hoppas över vid hämtning. I ovan exempel skippas alltså de första tio posterna. Nedan exempel hämtar alla tre poster som följer efter de första tre.
 
-länk **?skip=3&&limit=3**
+länk **?skip=3&limit=3**
 
 __Kim Dudenhöfer, 2026-03-02__
