@@ -50,7 +50,7 @@ exports.loginUser = async (request, h) => {
         const payload = { id: validUser._id, username: validUser.username }
         const token = jwt.sign(payload, process.env.JWT_SECRET_KEY, {expiresIn: "1h"});
 
-        return h.response({ message: "User logged in: ", username: validUser.username, token: token }).code(200);
+        return h.response({ username: validUser.username, token: token }).code(200);
 
     } catch(error) {
 
