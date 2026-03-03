@@ -33,7 +33,7 @@ exports.loginUser = async (request, h) => {
         const { username, password } = request.payload;
         
         //Validating username
-        const validUser = await model.findOne({ username: username }).select("password");
+        const validUser = await model.findOne({ username: username }).select( "password").select( "username");
 
         if(!validUser) {
             throw new Error("Invalid username or password");
@@ -58,6 +58,6 @@ exports.loginUser = async (request, h) => {
             return h.response({ error: error.message }).code(401);
         }
 
-        return h.response({ error: "An error occurred: " + error }).code(500);
+        return h.response({ error: "An error occurred during login. Please try again later." }).code(500);
     }
 }
