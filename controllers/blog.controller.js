@@ -9,10 +9,14 @@ exports.getBlogs = async (request, h) => {
 
     //Queries for pagination
     let start = 0;
-    let end = start +10;             
+    let end = 10;             
 
     if(skip) {
         start = Number(skip);
+    }
+
+    if(limit) {
+        end = Number(limit);
     }
 
     try {
@@ -20,30 +24,49 @@ exports.getBlogs = async (request, h) => {
 
         //Validation of queries
         if(start < 0) {
-            console.log("Fångad av första if-satsen.")
             throw new Error("Query 'skip' must be higher than 0");
         }
 
         if(isNaN(start)) {
-            console.log("Fångad av andra if-satsen.")
             throw new Error("Query 'skip' must be a number");
         }
 
-        if(limit) {
-            end = Number(limit);
-
-            if(isNaN(end)) {
-                throw new Error("Query 'end' must be a number");
-            }
-
-            //Fetch with limit
-            result = await Post.find().skip(start).limit(end)
-
-        } else {
-
-            //Fetch without limit
-            result = await Post.find().skip(start);
+        if(isNaN(end)) {
+            throw new Error("Query 'end' must be a number");
         }
+
+        //Fetch view without limit
+        result = await Post.aggregate([
+            //Joining collections
+            {
+                $lookup:{
+                        from: "users",
+                        localField: "user_id",
+                        foreignField: "_id",
+                        as: "result"
+                    }
+            },
+            //Deselecting password
+            {
+                $unset: "result.password"
+            },
+            //Deconstructing result-array
+            { 
+                $unwind: "$result"
+            },
+            //Sorting by most recent
+            {
+                $sort: { "createdAt": -1 }
+            },
+            //Skipping over specified amount of docs
+            {
+                $skip: start
+            },
+            //Limiting to specified amount of docs
+            {
+                $limit: end
+            }
+        ]);
 
         return h.response(result).code(200);
 

@@ -28,6 +28,6 @@ Med __limit__ kan antalet resultat som returneras begränsas. I ovan exempel kom
 [https://dt210g-lab3-api.onrender.com/blog](https://dt210g-lab3-api.onrender.com/blog)**?skip=10**
 Med __skip__ kan anges hur många inlägg som ska hoppas över vid hämtning. I ovan exempel skippas alltså de första tio posterna. Nedan exempel hämtar alla tre poster som följer efter de första tre.
 
-[https://dt210g-lab3-api.onrender.com/blog](https://dt210g-lab3-api.onrender.com/blog)**?skip=3&&limit=3**
+[https://dt210g-lab3-api.onrender.com/blog](https://dt210g-lab3-api.onrender.com/blog)**?skip=3&limit=3**
 
 __Kim Dudenhöfer, 2026-03-02__

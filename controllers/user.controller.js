@@ -33,7 +33,7 @@ exports.loginUser = async (request, h) => {
         const { username, password } = request.payload;
         
         //Validating username
-        const validUser = await model.findOne({ username: username });
+        const validUser = await model.findOne({ username: username }).select("password");
 
         if(!validUser) {
             throw new Error("Invalid username or password");
