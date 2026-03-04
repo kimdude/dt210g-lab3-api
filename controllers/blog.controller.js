@@ -91,17 +91,7 @@ exports.addBlog = async (request, h) => {
         const post = new Post({title, text, user_id});
         const data = await post.save();
 
-        //Response with username
-        const result = {
-            title: data.title,
-            text: data.text,
-            user_id: data.user_id,
-            username:  request.auth.credentials.username,
-            created: data.createdAt,
-            updated: data.updatedAt
-        }
-
-        return h.response(result).code(200);
+        return h.response({message: "Post added: " + data._id}).code(200);
 
     } catch(error) {
         return h.response({ error: "An error occurred adding the post: " + error.message }).code(500);
@@ -121,19 +111,31 @@ exports.getBlog = async (request, h) => {
             throw new Error("Invalid post ID");
         }
 
-        const user = await User.findOne({ _id: data.user_id });
+        //Fetch view 
+        const user = await Post.aggregate([
+            {
+                $match: {_id: data._id}
+            },
+            //Joining collections
+            {
+                $lookup:{
+                        from: "users",
+                        localField: "user_id",
+                        foreignField: "_id",
+                        as: "result"
+                    }
+            },
+            //Deselecting password
+            {
+                $unset: "result.password"
+            },
+            //Deconstructing result-array
+            { 
+                $unwind: "$result"
+            }
+        ]);    
 
-        //Response with username
-        const result = {
-            title: data.title,
-            text: data.text,
-            user_id: data.user_id,
-            username:  user.username,
-            created: data.createdAt,
-            updated: data.updatedAt
-        }        
-
-        return h.response(result).code(200);
+        return h.response(user).code(200);
 
     } catch(error) {
 
@@ -152,9 +154,6 @@ exports.updateBlog = async (request, h) => {
 
         const { title, text } = request.payload;
         const { _id } = request.params;
-
-        const username = request.auth.credentials.username;
-        const user_id= request.auth.credentials._id;
 
         //Updating
         const data = await Post.findOneAndUpdate({ _id: _id }, { title, text }, { returnDocument: "after" });
