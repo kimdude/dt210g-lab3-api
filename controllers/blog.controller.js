@@ -35,7 +35,7 @@ exports.getBlogs = async (request, h) => {
             throw new Error("Query 'end' must be a number");
         }
 
-        //Fetch view without limit
+        //Fetch view 
         result = await Post.aggregate([
             //Joining collections
             {
@@ -163,17 +163,7 @@ exports.updateBlog = async (request, h) => {
             throw new Error("Invalid post ID");
         }
 
-        //Response with username
-        const result = {
-            title: data.title,
-            text: data.text,
-            user_id: user_id,
-            username:  username,
-            created: data.createdAt,
-            updated: data.updatedAt
-        }   
-
-        return h.response(result).code(200);
+        return h.response({message: "Post updated: " + data._id}).code(200);
 
     } catch(error) {
 
